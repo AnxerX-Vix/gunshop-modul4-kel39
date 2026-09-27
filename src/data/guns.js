@@ -46,6 +46,31 @@ const GUNS = [
     price: 399,
     image: '/guns/shotgun.svg',
     description: 'The other pump gun. Twin action bars, a simple safety on the tang, and a price that leaves money for ammunition.'
+  },
+  //3 tambahan
+  {
+    name: 'MP5',
+    type: 'SMG',
+    caliber: '9mm',
+    price: 1399,
+    image: 'https://shootingrangeprague.com/media/CACHE/images/images/Snimek_obrazovky_2023-05-23_v11.35.19/61e8be466009fa1aa5c48ac56e88b94a.jpg',
+    description: 'Closed-bolt submachine gun known for extreme accuracy, smooth recoil handling, and unmatched operational reliability worldwide.'
+  },
+  {
+    name: 'Barrett M82A1',
+    type: 'Sniper',
+    caliber: '.50 BMG',
+    price: 8999,
+    image: 'https://barrett.net/wp-content/uploads/2020/11/model-82a1-product-img.jpg',
+    description: 'Semi-automatic anti-materiel precision rifle utilizing a recoiling barrel design to deliver long-range ballistic power.'
+  },
+  {
+    name: 'Benelli M4',
+    type: 'Shotgun',
+    caliber: '12 Gauge',
+    price: 1899,
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkIK7g8RmNUbXWJbVgJYOogK7x5Jlmo_6ueYBkVkAaRA&s=10',
+    description: 'Auto-regulating dual gas cylinder tactical shotgun engineered specifically for combat resilience and diverse shell compatibility.'
   }
 ]
 

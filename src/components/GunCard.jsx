@@ -1,34 +1,25 @@
 import { useRef } from 'react'
 
-function GunCard({ gun }) {
-  const popup = useRef(null)
-
+function GunCard({ gun, onCheckout }) {
   return (
-    <li className="card">
-      <button className="card-btn" onClick={() => popup.current.showModal()}>
-        <img className="card-img" src={gun.image} alt="" width="120" height="90" />
-        <span className="name display">{gun.name}</span>
-        <span className="type">
-          {gun.type} · {gun.caliber}
-        </span>
-        <span className="price">${gun.price.toLocaleString()}</span>
-      </button>
-
-      <dialog
-        className="popup"
-        ref={popup}
-        onClick={(e) => e.target === popup.current && popup.current.close()}
-      >
-        <img className="popup-img" src={gun.image} alt="" width="240" height="180" />
-        <h3 className="display">{gun.name}</h3>
-        <p className="type">
-          {gun.type} · {gun.caliber} · <span className="price">${gun.price.toLocaleString()}</span>
-        </p>
-        <p>{gun.description}</p>
-        <form method="dialog">
-          <button className="popup-close">Close</button>
-        </form>
-      </dialog>
+    <li className="gun-card">
+      <div className="gun-image-container">
+        <img src={gun.image} alt={gun.name} />
+      </div>
+      <div className="gun-info">
+        <div className="gun-head">
+          <h3 className="gun-name">{gun.name}</h3>
+          <span className="gun-price">${gun.price}</span>
+        </div>
+        <p className="gun-type">{gun.type} &bull; {gun.caliber}</p>
+        <p className="gun-desc">{gun.description}</p>
+        <button 
+          className="btn-checkout"
+          onClick={() => onCheckout(gun)}
+        >
+          Checkout Item
+        </button>
+      </div>
     </li>
   )
 }
