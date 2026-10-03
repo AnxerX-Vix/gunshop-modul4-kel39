@@ -41,7 +41,7 @@ function App() {
   }
 
   // Menghitung total seluruh kuantitas item untuk badge di Header
-  const totalItemCount = cart.reduce((sum, item) => sum + item.quantity, 0)
+  const totalItemCount = (cart || []).reduce((sum, item) => sum + item.quantity, 0)
 
   return (
     <div className="shell">

@@ -1,5 +1,7 @@
-function CartModal({ cart, onClose, onUpdateQuantity }) {
-  const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
+// Tambahkan "= []" pada parameter props cart
+function CartModal({ cart = [], onClose, onUpdateQuantity }) {
+  // Tambahkan pelindung (cart || []) sebelum memanggil .reduce
+  const totalPrice = (cart || []).reduce((sum, item) => sum + item.price * item.quantity, 0)
 
   return (
     <div className="cart-overlay" onClick={onClose}>
