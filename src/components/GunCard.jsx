@@ -1,6 +1,4 @@
-import { useRef } from 'react'
-
-function GunCard({ gun, onCheckout }) {
+function GunCard({ gun, onAddToCart }) {
   return (
     <li className="gun-card">
       <div className="gun-image-container">
@@ -13,11 +11,11 @@ function GunCard({ gun, onCheckout }) {
         </div>
         <p className="gun-type">{gun.type} &bull; {gun.caliber}</p>
         <p className="gun-desc">{gun.description}</p>
-        <button 
-          className="btn-checkout"
-          onClick={() => onCheckout(gun)}
+        <button
+          className="btn-add-cart"
+          onClick={() => onAddToCart(gun)}
         >
-          Checkout Item
+          + Tambah ke Keranjang
         </button>
       </div>
     </li>
