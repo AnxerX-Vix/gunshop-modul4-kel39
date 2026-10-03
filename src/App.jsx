@@ -14,34 +14,38 @@ function App() {
 
   // Fungsi menambah barang ke keranjang belanja
   const handleAddToCart = (gun) => {
+    if (!gun) return
     setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.name === gun.name)
+      const currentCart = Array.isArray(prevCart) ? prevCart : []
+      const existingItem = currentCart.find((item) => item.name === gun.name)
       if (existingItem) {
-        return prevCart.map((item) =>
-          item.name === gun.name ? { ...item, quantity: item.quantity + 1 } : item
+        return currentCart.map((item) =>
+          item.name === gun.name ? { ...item, quantity: (item.quantity || 1) + 1 } : item
         )
       }
-      return [...prevCart, { ...gun, quantity: 1 }]
+      return [...currentCart, { ...gun, quantity: 1 }]
     })
   }
 
   // Fungsi mengatur kuantitas item (+ / -)
   const handleUpdateQuantity = (gunName, delta) => {
-    setCart((prevCart) =>
-      prevCart
+    setCart((prevCart) => {
+      const currentCart = Array.isArray(prevCart) ? prevCart : []
+      return currentCart
         .map((item) => {
           if (item.name === gunName) {
-            const newQty = item.quantity + delta
+            const newQty = (item.quantity || 0) + delta
             return newQty > 0 ? { ...item, quantity: newQty } : null
           }
           return item
         })
         .filter(Boolean)
-    )
+    })
   }
 
-  // Menghitung total seluruh kuantitas item untuk badge di Header
-  const totalItemCount = (cart || []).reduce((sum, item) => sum + item.quantity, 0)
+  // Menghitung total seluruh kuantitas item untuk badge di Header dengan proteksi defensif
+  const safeCart = Array.isArray(cart) ? cart : []
+  const totalItemCount = safeCart.reduce((sum, item) => sum + (Number(item?.quantity) || 0), 0)
 
   return (
     <div className="shell">

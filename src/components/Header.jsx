@@ -1,4 +1,6 @@
-function Header({ tab, onTab, cartCount, onOpenCart }) {
+function Header({ tab = 'Catalog', onTab = () => {}, cartCount = 0, onOpenCart = () => {} }) {
+  const safeCartCount = Number(cartCount) || 0
+
   return (
     <header className="header">
       <div className="brand">
@@ -9,6 +11,7 @@ function Header({ tab, onTab, cartCount, onOpenCart }) {
         {['Catalog', 'About', 'Contact'].map((item) => (
           <button
             key={item}
+            type="button"
             className={`nav-btn ${tab === item ? 'active' : ''}`}
             onClick={() => onTab(item)}
           >
@@ -16,9 +19,9 @@ function Header({ tab, onTab, cartCount, onOpenCart }) {
           </button>
         ))}
         {/* Tombol Keranjang Belanja dengan Badge */}
-        <button className="cart-header-btn" onClick={onOpenCart}>
+        <button type="button" className="cart-header-btn" onClick={onOpenCart}>
           🛒 Keranjang
-          {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+          {safeCartCount > 0 && <span className="cart-badge">{safeCartCount}</span>}
         </button>
       </nav>
     </header>

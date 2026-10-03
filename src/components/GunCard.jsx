@@ -1,4 +1,6 @@
-function GunCard({ gun, onAddToCart }) {
+function GunCard({ gun, onAddToCart = () => {} }) {
+  if (!gun) return null
+
   return (
     <li className="gun-card">
       <div className="gun-image-container">
@@ -12,6 +14,7 @@ function GunCard({ gun, onAddToCart }) {
         <p className="gun-type">{gun.type} &bull; {gun.caliber}</p>
         <p className="gun-desc">{gun.description}</p>
         <button
+          type="button"
           className="btn-add-cart"
           onClick={() => onAddToCart(gun)}
         >

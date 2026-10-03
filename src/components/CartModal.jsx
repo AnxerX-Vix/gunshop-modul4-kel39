@@ -1,7 +1,12 @@
-// Tambahkan "= []" pada parameter props cart
-function CartModal({ cart = [], onClose, onUpdateQuantity }) {
-  // Tambahkan pelindung (cart || []) sebelum memanggil .reduce
-  const totalPrice = (cart || []).reduce((sum, item) => sum + item.price * item.quantity, 0)
+function CartModal({ cart = [], onClose = () => {}, onUpdateQuantity = () => {} }) {
+  // Proteksi defensif memastikan cart selalu array yang valid
+  const safeCart = Array.isArray(cart) ? cart : []
+
+  // Menghitung total harga secara aman
+  const totalPrice = safeCart.reduce(
+    (sum, item) => sum + (Number(item?.price) || 0) * (Number(item?.quantity) || 0),
+    0
+  )
 
   return (
     <div className="cart-overlay" onClick={onClose}>
@@ -11,36 +16,38 @@ function CartModal({ cart = [], onClose, onUpdateQuantity }) {
           <button className="btn-close" onClick={onClose}>&times;</button>
         </div>
 
-        {cart.length === 0 ? (
+        {safeCart.length === 0 ? (
           <div className="cart-empty">
             <p>Keranjang belanja masih kosong.</p>
           </div>
         ) : (
           <>
             <ul className="cart-list">
-              {cart.map((item) => (
-                <li key={item.name} className="cart-item">
+              {safeCart.map((item, index) => (
+                <li key={item?.name || index} className="cart-item">
                   <div className="cart-item-detail">
-                    <strong>{item.name}</strong>
-                    <span>${item.price} x {item.quantity}</span>
+                    <strong>{item?.name}</strong>
+                    <span>${item?.price} x {item?.quantity}</span>
                   </div>
                   <div className="cart-item-controls">
                     <button
+                      type="button"
                       className="btn-qty"
-                      onClick={() => onUpdateQuantity(item.name, -1)}
+                      onClick={() => onUpdateQuantity(item?.name, -1)}
                     >
                       -
                     </button>
-                    <span className="qty-count">{item.quantity}</span>
+                    <span className="qty-count">{item?.quantity}</span>
                     <button
+                      type="button"
                       className="btn-qty"
-                      onClick={() => onUpdateQuantity(item.name, 1)}
+                      onClick={() => onUpdateQuantity(item?.name, 1)}
                     >
                       +
                     </button>
                   </div>
                   <div className="cart-item-subtotal">
-                    ${item.price * item.quantity}
+                    ${(Number(item?.price) || 0) * (Number(item?.quantity) || 0)}
                   </div>
                 </li>
               ))}
@@ -52,6 +59,7 @@ function CartModal({ cart = [], onClose, onUpdateQuantity }) {
                 <strong className="cart-total-price">${totalPrice}</strong>
               </div>
               <button
+                type="button"
                 className="btn-checkout-action"
                 onClick={() => {
                   alert(`Pesanan berhasil diproses dengan total $${totalPrice}!`)
