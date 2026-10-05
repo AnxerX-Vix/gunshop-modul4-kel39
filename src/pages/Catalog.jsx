@@ -5,25 +5,58 @@ import GunCard from '../components/GunCard.jsx'
 function Catalog({ onAddToCart = () => {} }) {
   const [search, setSearch] = useState('')
   const [filterType, setFilterType] = useState('All')
-  const [isSorted, setIsSorted] = useState(false)
+  
+  // State 3 kondisi: 'none' | 'asc' | 'desc'
+  const [sortPrice, setSortPrice] = useState('none')
+  const [sortName, setSortName] = useState('none')
 
-  // Ekstrak kategori secara dinamis dari data senjata
-  const categories = ['All', ...new Set((GUNS || []).map((gun) => gun.type))]
+  const categories = ['All', ...new Set(GUNS.map((gun) => gun.type))]
 
-  // Filter pencarian dan tipe
-  const filteredGuns = (GUNS || []).filter((gun) => {
-    const query = search.toLowerCase()
+  // Toggle Siklus Harga: none -> asc (termurah) -> desc (termahal) -> none
+  const handleTogglePrice = () => {
+    setSortName('none') // Matikan sort nama agar tidak bentrok
+    if (sortPrice === 'none') {
+      setSortPrice('asc')
+    } else if (sortPrice === 'asc') {
+      setSortPrice('desc')
+    } else {
+      setSortPrice('none')
+    }
+  }
+
+  // Toggle Siklus Nama: none -> asc (A-Z) -> desc (Z-A) -> none
+  const handleToggleName = () => {
+    setSortPrice('none') // Matikan sort harga agar tidak bentrok
+    if (sortName === 'none') {
+      setSortName('asc')
+    } else if (sortName === 'asc') {
+      setSortName('desc')
+    } else {
+      setSortName('none')
+    }
+  }
+
+  // 1. Filter Pencarian & Kategori
+  const filteredGuns = GUNS.filter((gun) => {
     const matchSearch =
-      (gun.name && gun.name.toLowerCase().includes(query)) ||
-      (gun.caliber && gun.caliber.toLowerCase().includes(query))
+      gun.name.toLowerCase().includes(search.toLowerCase()) ||
+      gun.caliber.toLowerCase().includes(search.toLowerCase())
     const matchType = filterType === 'All' || gun.type === filterType
     return matchSearch && matchType
   })
 
-  // Pengurutan berdasarkan harga jika sort toggle aktif
-  const displayedGuns = isSorted
-    ? [...filteredGuns].sort((a, b) => (a.price || 0) - (b.price || 0))
-    : filteredGuns
+  // 2. Logika Pengurutan
+  const processedGuns = [...filteredGuns].sort((a, b) => {
+    // Pengurutan Harga
+    if (sortPrice === 'asc') return a.price - b.price
+    if (sortPrice === 'desc') return b.price - a.price
+
+    // Pengurutan Nama
+    if (sortName === 'asc') return a.name.localeCompare(b.name)
+    if (sortName === 'desc') return b.name.localeCompare(a.name)
+
+    return 0 // Urutan default bawaan
+  })
 
   return (
     <>
@@ -35,7 +68,7 @@ function Catalog({ onAddToCart = () => {} }) {
       </section>
 
       <section>
-        {/* Toolbar: Search, Filter Tipe, dan Toggle Sort */}
+        {/* Toolbar Pencarian, Filter Kategori, dan 2 Tombol Sort */}
         <div className="catalog-toolbar">
           <input
             type="text"
@@ -57,24 +90,36 @@ function Catalog({ onAddToCart = () => {} }) {
             ))}
           </select>
 
+          {/* Tombol Toggle Harga */}
           <button
-            type="button"
-            className={`btn-sort-toggle ${isSorted ? 'active-sort' : ''}`}
-            onClick={() => setIsSorted((prev) => !prev)}
+            className={`btn-sort-toggle ${sortPrice !== 'none' ? 'active-sort' : ''}`}
+            onClick={handleTogglePrice}
           >
-            {isSorted ? 'Harga: Termurah ↑' : 'Urutkan Harga'}
+            {sortPrice === 'none' && 'Urutkan Harga'}
+            {sortPrice === 'asc' && 'Harga: Termurah ↑'}
+            {sortPrice === 'desc' && 'Harga: Termahal ↓'}
+          </button>
+
+          {/* Tombol Toggle Nama */}
+          <button
+            className={`btn-sort-toggle ${sortName !== 'none' ? 'active-sort' : ''}`}
+            onClick={handleToggleName}
+          >
+            {sortName === 'none' && 'Urutkan Nama'}
+            {sortName === 'asc' && 'Nama: A → Z ↑'}
+            {sortName === 'desc' && 'Nama: Z → A ↓'}
           </button>
         </div>
 
         <div className="list-head">
           <h2>Current stock</h2>
-          <span className="count">{displayedGuns.length} pieces</span>
+          <span className="count">{processedGuns.length} pieces</span>
         </div>
 
-        {/* Tampilan Kondisi: Ada Data vs 'no guns match' */}
-        {displayedGuns.length > 0 ? (
+        {/* Tampilan Kartu / Notifikasi Kosong */}
+        {processedGuns.length > 0 ? (
           <ul className="stock">
-            {displayedGuns.map((gun) => (
+            {processedGuns.map((gun) => (
               <GunCard
                 key={gun.name}
                 gun={gun}
